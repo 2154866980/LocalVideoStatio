@@ -1,91 +1,61 @@
 # LocalVideoStation
 
-LocalVideoStation is a local-first video management and playback project designed for organizing personal video collections on your own machine.
+LocalVideoStation is an Android app project focused on local video playback, video management, author/tag systems, scoring, favorites, watch history, and recommendation logic.
 
-## Overview
+## Project vision
 
-This project aims to help users:
+This app is designed for users who want a Bilibili-inspired local video experience without relying on online streaming. It aims to keep content local, organized, and personalized.
 
-- browse local video files from one organized library
-- manage folders and collections without relying on cloud storage
-- search videos quickly by file name, folder, or metadata
-- play media in a simple and lightweight interface
-- keep everything stored locally and privately
+## Core features
 
-## Features
+- Local video playback on Android
+- Import and scan local video folders
+- Video list, author management, tag management
+- Ratings and recommendation logic
+- Favorites and recent watch history
+- Bilibili-like dark content platform layout
 
-- Local video library browsing
-- Folder-based organization
-- Search and filtering
-- Media playback interface
-- Lightweight personal media management
-- Extensible architecture for future enhancements
+## Recommended stack
 
-## Project Status
+- Kotlin
+- Jetpack Compose
+- Media3 / ExoPlayer
+- Room database
+- MVVM architecture
+- MediaStore / SAF for local video access
 
-This repository is in the initial setup stage. The foundation is being created, and more features will be added as development progresses.
-
-## Tech Stack
-
-The project is expected to use a modern web stack for local media management, such as:
-
-- Node.js
-- React / frontend framework
-- REST API or local service layer
-- Browser-based video playback
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js 18 or later
-- npm or pnpm
-- A local directory containing video files
-
-### Installation
-
-```bash
-git clone https://github.com/2154866980/LocalVideoStatio.git
-cd LocalVideoStatio
-npm install
-```
-
-### Run the app
-
-```bash
-npm run dev
-```
-
-Then open the local address shown in the terminal in your browser.
-
-## Project Structure
+## Android project structure
 
 ```text
-LocalVideoStatio/
-├── README.md
-├── package.json
-├── src/
-├── public/
-├── server/
-└── assets/
+LocalVideoStation
+├── app
+│   ├── src/main/java/com/localvideostation/app
+│   ├── src/main/res
+│   └── build.gradle.kts
+├── build.gradle.kts
+├── settings.gradle.kts
+├── gradle.properties
+└── README.md
 ```
 
-## Roadmap
+## Open in Android Studio
 
-Planned improvements may include:
+1. Open the repository in Android Studio.
+2. Let Gradle sync the project.
+3. Select an Android emulator or a physical device.
+4. Run the app configuration.
 
-- automatic video scanning
-- thumbnail generation
+## Development notes
+
+This repository currently contains the initial Android app scaffold for the local video platform concept. Features will be expanded iteratively to include:
+
+- file import and library scanning
 - metadata extraction
-- tag and collection management
-- watch history
-- improved playback controls
-- better UI/UX for home media browsing
+- scoring and recommendation weighting
+- local database persistence
+- player resume state
+- content discovery screens
 
 ## License
 
-This project does not currently include a license file. If you plan to publish or distribute it, consider adding an open-source license.
-
-## Contributing
-
-Contributions are welcome. Please open an issue or submit a pull request with your suggestions, bug fixes, or enhancements.
+This project currently does not include a license. Add a license before public distribution.
