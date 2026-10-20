@@ -1,34 +1,12 @@
 package com.localvideostation.app.data
 
-import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.TypeConverter
 
-@Database(
-    entities = [VideoEntity::class],
-    version = 1,
-    exportSchema = false
-)
-@TypeConverters(StringListConverter::class)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun videoDao(): VideoDao
+class StringListConverter {
+    @TypeConverter
+    fun fromString(value: String): List<String> =
+        if (value.isBlank()) emptyList() else value.split(",").map { it.trim() }.filter { it.isNotEmpty() }
 
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
-
-        fun getInstance(context: Context): AppDatabase =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "local_video_station.db"
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
-                    .also { INSTANCE = it }
-            }
-    }
+    @TypeConverter
+    fun fromList(value: List<String>): String = value.joinToString(separator = ",")
 }

@@ -1,34 +1,22 @@
 package com.localvideostation.app.data
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
-@Entity(tableName = "videos")
-data class VideoEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val title: String,
-    val fileName: String,
-    val path: String,
-    val author: String,
-    val durationMs: Long,
-    val rating: Float = 0f,
-    val ratingCount: Int = 0,
-    val tags: List<String> = emptyList(),
-    val favorite: Boolean = false,
-    val lastPositionMs: Long = 0L,
-    val lastPlayedAt: Long = 0L,
-    val isVisible: Boolean = true
-) {
-    val durationText: String
-        get() = formatDuration(durationMs)
+@Dao
+interface VideoDao {
+    @Query("SELECT * FROM videos ORDER BY lastPlayedAt DESC")
+    fun observeVideos(): Flow<List<VideoEntity>>
 
-    companion object {
-        fun formatDuration(durationMs: Long): String {
-            val totalSeconds = (durationMs / 1000L).coerceAtLeast(0)
-            val minutes = totalSeconds / 60
-            val seconds = totalSeconds % 60
-            return "%02d:%02d".format(minutes, seconds)
-        }
-    }
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(video: VideoEntity)
+
+    @Query("SELECT * FROM videos WHERE favorite = 1 ORDER BY lastPlayedAt DESC")
+    fun observeFavorites(): Flow<List<VideoEntity>>
+
+    @Query("SELECT * FROM videos WHERE isVisible = 1 ORDER BY rating DESC")
+    fun observeRecommended(): Flow<List<VideoEntity>>
 }

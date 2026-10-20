@@ -1,39 +1,34 @@
-package com.localvideostation.app.ui.theme
+package com.localvideostation.app.data
 
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.runtime.Composable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-private val DarkColorScheme = darkColorScheme(
-    primary = androidx.compose.ui.graphics.Color(0xFF2B6BFF),
-    secondary = androidx.compose.ui.graphics.Color(0xFF6AC5FF),
-    background = androidx.compose.ui.graphics.Color(0xFF0F1117),
-    surface = androidx.compose.ui.graphics.Color(0xFF171B27),
-    onPrimary = androidx.compose.ui.graphics.Color.White,
-    onBackground = androidx.compose.ui.graphics.Color.White,
-    onSurface = androidx.compose.ui.graphics.Color.White
-)
-
-private val LightColorScheme = lightColorScheme(
-    primary = androidx.compose.ui.graphics.Color(0xFF2B6BFF),
-    secondary = androidx.compose.ui.graphics.Color(0xFF6AC5FF),
-    background = androidx.compose.ui.graphics.Color(0xFFF5F7FA),
-    surface = androidx.compose.ui.graphics.Color.White,
-    onPrimary = androidx.compose.ui.graphics.Color.White,
-    onBackground = androidx.compose.ui.graphics.Color.Black,
-    onSurface = androidx.compose.ui.graphics.Color.Black
-)
-
-@Composable
-fun LocalVideoStationTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    content: @Composable () -> Unit
+@Entity(tableName = "videos")
+data class VideoEntity(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long = 0,
+    val title: String,
+    val fileName: String,
+    val path: String,
+    val author: String,
+    val durationMs: Long,
+    val rating: Float = 0f,
+    val ratingCount: Int = 0,
+    val tags: List<String> = emptyList(),
+    val favorite: Boolean = false,
+    val lastPositionMs: Long = 0L,
+    val lastPlayedAt: Long = 0L,
+    val isVisible: Boolean = true
 ) {
-    val colorScheme = if (darkTheme) DarkColorScheme else LightColorScheme
-    MaterialTheme(
-        colorScheme = colorScheme,
-        content = content
-    )
+    val durationText: String
+        get() = formatDuration(durationMs)
+
+    companion object {
+        fun formatDuration(durationMs: Long): String {
+            val totalSeconds = (durationMs / 1000L).coerceAtLeast(0)
+            val minutes = totalSeconds / 60
+            val seconds = totalSeconds % 60
+            return "%02d:%02d".format(minutes, seconds)
+        }
+    }
 }

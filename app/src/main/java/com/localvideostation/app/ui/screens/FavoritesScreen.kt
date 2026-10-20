@@ -10,15 +10,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LibraryScreen() {
+fun FavoritesScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(text = "本地视频库", color = Color.White)
+        Text(text = "收藏列表", color = Color.White)
         Text(
-            text = "支持扫描目录、分类和筛选",
+            text = "收藏的视频会被优先纳入推荐排序",
             color = Color(0xFFB8C2D1),
             modifier = Modifier.padding(top = 8.dp)
         )

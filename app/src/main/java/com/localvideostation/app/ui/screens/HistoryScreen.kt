@@ -10,15 +10,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FavoritesScreen() {
+fun HistoryScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(text = "收藏列表", color = Color.White)
+        Text(text = "最近观看", color = Color.White)
         Text(
-            text = "收藏的视频会被优先纳入推荐排序",
+            text = "根据观看历史与活跃度参与推荐",
             color = Color(0xFFB8C2D1),
             modifier = Modifier.padding(top = 8.dp)
         )

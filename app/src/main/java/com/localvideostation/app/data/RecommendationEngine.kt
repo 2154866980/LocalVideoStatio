@@ -1,12 +1,16 @@
 package com.localvideostation.app.data
 
-import androidx.room.TypeConverter
+class RecommendationEngine {
+    fun score(video: VideoEntity): Double {
+        var total = 0.0
+        total += video.rating * 2.2
+        total += if (video.favorite) 15.0 else 0.0
+        total += video.ratingCount * 0.8
+        total += (video.lastPositionMs / 60000.0) * 0.1
+        return total
+    }
 
-class StringListConverter {
-    @TypeConverter
-    fun fromString(value: String): List<String> =
-        if (value.isBlank()) emptyList() else value.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-
-    @TypeConverter
-    fun fromList(value: List<String>): String = value.joinToString(separator = ",")
+    fun recommend(videos: List<VideoEntity>): List<VideoEntity> {
+        return videos.sortedByDescending { score(it) }.take(5)
+    }
 }
