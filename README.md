@@ -1,69 +1,91 @@
 # LocalVideoStation
 
-LocalVideoStation is a self-hosted application for organizing, browsing, and playing local video files from your own computer or home media server.
+LocalVideoStation is a local-first video management and playback project designed for organizing personal video collections on your own machine.
+
+## Overview
+
+This project aims to help users:
+
+- browse local video files from one organized library
+- manage folders and collections without relying on cloud storage
+- search videos quickly by file name, folder, or metadata
+- play media in a simple and lightweight interface
+- keep everything stored locally and privately
 
 ## Features
 
-- Browse local video libraries by folder or collection
-- Search for titles, folders, or tags
-- Preview metadata and file details
-- Play videos locally in the browser or desktop app
-- Keep the media library on your own machine
-- Lightweight setup for personal media management
+- Local video library browsing
+- Folder-based organization
+- Search and filtering
+- Media playback interface
+- Lightweight personal media management
+- Extensible architecture for future enhancements
 
 ## Project Status
 
-This project is currently being initialized. The repository structure and application features will be expanded as development progresses.
+This repository is in the initial setup stage. The foundation is being created, and more features will be added as development progresses.
 
-## Requirements
+## Tech Stack
 
-- A machine with local video files available
-- Node.js 18+ or your preferred runtime for the project
-- A browser or desktop environment for viewing content
+The project is expected to use a modern web stack for local media management, such as:
 
-## Quick Start
+- Node.js
+- React / frontend framework
+- REST API or local service layer
+- Browser-based video playback
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/2154866980/LocalVideoStatio.git
-   cd LocalVideoStatio
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the application:
-   ```bash
-   npm run dev
-   ```
-4. Open the local app in your browser.
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18 or later
+- npm or pnpm
+- A local directory containing video files
+
+### Installation
+
+```bash
+git clone https://github.com/2154866980/LocalVideoStatio.git
+cd LocalVideoStatio
+npm install
+```
+
+### Run the app
+
+```bash
+npm run dev
+```
+
+Then open the local address shown in the terminal in your browser.
 
 ## Project Structure
 
 ```text
-.
+LocalVideoStatio/
 ├── README.md
 ├── package.json
 ├── src/
 ├── public/
-└── ...
+├── server/
+└── assets/
 ```
 
-## Development Notes
+## Roadmap
 
-This repository is intended to grow into a local-first media management system. Future updates may include:
+Planned improvements may include:
 
-- video library scanning
+- automatic video scanning
 - thumbnail generation
 - metadata extraction
+- tag and collection management
 - watch history
-- streaming and playback controls
-- user interface improvements
+- improved playback controls
+- better UI/UX for home media browsing
 
 ## License
 
-This project is currently unlicensed. Add a license file if you intend to distribute or publish it.
+This project does not currently include a license file. If you plan to publish or distribute it, consider adding an open-source license.
 
 ## Contributing
 
-Contributions are welcome. Please open an issue or pull request to suggest improvements, bug fixes, or new features.
+Contributions are welcome. Please open an issue or submit a pull request with your suggestions, bug fixes, or enhancements.
