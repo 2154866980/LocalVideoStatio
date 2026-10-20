@@ -1,6 +1,7 @@
 package com.localvideostation.app.ui.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,20 @@ fun HomeScreen(viewModel: VideoViewModel) {
     val context = LocalContext.current
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf("首页", "收藏", "历史", "搜索")
+
+    val selectedVideo = uiState.selectedVideoId?.let { id ->
+        uiState.videos.firstOrNull { it.id == id }
+    }
+
+    if (selectedVideo != null) {
+        VideoDetailScreen(
+            video = selectedVideo,
+            onBack = { viewModel.clearSelectedVideo() },
+            onRate = { newRating -> viewModel.rateVideo(selectedVideo.id, newRating) },
+            onMarkWatched = { viewModel.markWatched(selectedVideo.id) }
+        )
+        return
+    }
 
     Box(
         modifier = Modifier
@@ -163,7 +178,11 @@ fun HomeScreen(viewModel: VideoViewModel) {
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             items(uiState.videos) { video ->
-                                VideoCard(video = video) { viewModel.toggleFavorite(video.id) }
+                                VideoCard(
+                                    video = video,
+                                    onClick = { viewModel.selectVideo(video.id) },
+                                    onToggleFavorite = { viewModel.toggleFavorite(video.id) }
+                                )
                             }
                         }
 
@@ -191,12 +210,15 @@ fun HomeScreen(viewModel: VideoViewModel) {
 @Composable
 fun VideoCard(
     video: VideoEntity,
+    onClick: () -> Unit,
     onToggleFavorite: () -> Unit
 ) {
     Card(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1C2230)),
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }
     ) {
         Column(
             modifier = Modifier
