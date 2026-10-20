@@ -8,19 +8,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.localvideostation.app.data.VideoEntity
 
 @Composable
-fun HistoryScreen() {
+fun HistoryScreen(videos: List<VideoEntity>) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
         Text(text = "最近观看", color = Color.White)
-        Text(
-            text = "根据观看历史与活跃度参与推荐",
-            color = Color(0xFFB8C2D1),
-            modifier = Modifier.padding(top = 8.dp)
-        )
+        if (videos.isEmpty()) {
+            Text(
+                text = "暂无观看历史",
+                color = Color(0xFFB8C2D1),
+                modifier = Modifier.padding(top = 12.dp)
+            )
+        } else {
+            videos.forEach { video ->
+                Text(
+                    text = "- ${video.title} • ${video.author}",
+                    color = Color.White,
+                    modifier = Modifier.padding(top = 8.dp)
+                )
+            }
+        }
     }
 }

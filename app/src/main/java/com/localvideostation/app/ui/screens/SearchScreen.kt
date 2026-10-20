@@ -2,21 +2,22 @@ package com.localvideostation.app.ui.screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.localvideostation.app.data.VideoEntity
 
 @Composable
-fun SearchScreen() {
-    var query by remember { mutableStateOf("") }
+fun SearchScreen(
+    query: String,
+    onQueryChange: (String) -> Unit,
+    videos: List<VideoEntity>
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -24,16 +25,21 @@ fun SearchScreen() {
     ) {
         OutlinedTextField(
             value = query,
-            onValueChange = { query = it },
+            onValueChange = onQueryChange,
             label = { Text("搜索视频 / 作者 / 标签") },
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxWidth()
         )
-        if (query.isNotBlank()) {
-            Text(
-                text = "搜索词：$query",
-                color = Color.White,
-                modifier = Modifier.padding(top = 12.dp)
-            )
+
+        if (videos.isNotEmpty()) {
+            Column(modifier = Modifier.padding(top = 12.dp)) {
+                videos.forEach { video ->
+                    Text(
+                        text = "- ${video.title} / ${video.author}",
+                        color = Color.White,
+                        modifier = Modifier.padding(vertical = 4.dp)
+                    )
+                }
+            }
         }
     }
 }

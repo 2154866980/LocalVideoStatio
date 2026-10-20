@@ -10,7 +10,6 @@ class RecommendationEngine {
         return total
     }
 
-    fun recommend(videos: List<VideoEntity>): List<VideoEntity> {
-        return videos.sortedByDescending { score(it) }.take(5)
-    }
+    fun recommend(videos: List<VideoEntity>): List<VideoEntity> =
+        videos.sortedByDescending { score(it) }.take(5)
 }

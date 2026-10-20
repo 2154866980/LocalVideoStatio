@@ -42,8 +42,7 @@ import com.localvideostation.app.viewmodel.VideoViewModel
 
 @Composable
 fun HomeScreen(viewModel: VideoViewModel) {
-    val videos by viewModel.videos.collectAsState()
-    val recommendations by viewModel.recommendations.collectAsState()
+    val uiState by viewModel.uiState.collectAsState()
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf("首页", "收藏", "历史", "搜索")
 
@@ -135,9 +134,13 @@ fun HomeScreen(viewModel: VideoViewModel) {
             }
 
             when (selectedTab) {
-                1 -> FavoritesScreen()
-                2 -> HistoryScreen()
-                3 -> SearchScreen()
+                1 -> FavoritesScreen(uiState.favoriteVideos)
+                2 -> HistoryScreen(uiState.historyVideos)
+                3 -> SearchScreen(
+                    query = uiState.searchQuery,
+                    onQueryChange = { viewModel.updateSearchQuery(it) },
+                    videos = uiState.filteredVideos
+                )
                 else -> {
                     Row(
                         modifier = Modifier.fillMaxSize(),
@@ -147,8 +150,8 @@ fun HomeScreen(viewModel: VideoViewModel) {
                             modifier = Modifier.weight(1f),
                             verticalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            items(videos) { video ->
-                                VideoCard(video = video)
+                            items(uiState.videos) { video ->
+                                VideoCard(video = video) { viewModel.toggleFavorite(video.id) }
                             }
                         }
 
@@ -162,7 +165,7 @@ fun HomeScreen(viewModel: VideoViewModel) {
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold
                             )
-                            recommendations.forEach { video ->
+                            uiState.recommendations.forEach { video ->
                                 RecommendationCard(video = video)
                             }
                         }
@@ -174,7 +177,10 @@ fun HomeScreen(viewModel: VideoViewModel) {
 }
 
 @Composable
-fun VideoCard(video: VideoEntity) {
+fun VideoCard(
+    video: VideoEntity,
+    onToggleFavorite: () -> Unit
+) {
     Card(
         shape = RoundedCornerShape(20.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF1C2230)),
@@ -214,6 +220,26 @@ fun VideoCard(video: VideoEntity) {
                 color = Color(0xFF78B8FF),
                 modifier = Modifier.padding(top = 10.dp)
             )
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Card(
+                    shape = RoundedCornerShape(12.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF2B6BFF)),
+                    onClick = onToggleFavorite
+                ) {
+                    Text(
+                        text = if (video.favorite) "已收藏" else "收藏",
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+            }
         }
     }
 }

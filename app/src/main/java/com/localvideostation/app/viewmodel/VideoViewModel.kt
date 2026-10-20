@@ -7,18 +7,21 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
+data class VideoUiState(
+    val videos: List<VideoEntity> = emptyList(),
+    val favoriteVideos: List<VideoEntity> = emptyList(),
+    val historyVideos: List<VideoEntity> = emptyList(),
+    val recommendations: List<VideoEntity> = emptyList(),
+    val searchQuery: String = "",
+    val filteredVideos: List<VideoEntity> = emptyList()
+)
+
 class VideoViewModel : ViewModel() {
     private val engine = RecommendationEngine()
 
-    private val _videos = MutableStateFlow(sampleVideos())
-    val videos: StateFlow<List<VideoEntity>> = _videos.asStateFlow()
-
-    val recommendations: StateFlow<List<VideoEntity>> = MutableStateFlow(
-        engine.recommend(sampleVideos())
-    ).asStateFlow()
-
-    private fun sampleVideos(): List<VideoEntity> = listOf(
+    private val initialVideos = listOf(
         VideoEntity(
+            id = 1,
             title = "少女与荒野",
             fileName = "shou_nv.mp4",
             path = "/storage/emulated/0/Videos/shou_nv.mp4",
@@ -32,6 +35,7 @@ class VideoViewModel : ViewModel() {
             lastPlayedAt = System.currentTimeMillis() - 10_000
         ),
         VideoEntity(
+            id = 2,
             title = "弹丸之城",
             fileName = "dan_ju.mp4",
             path = "/storage/emulated/0/Videos/dan_ju.mp4",
@@ -45,6 +49,7 @@ class VideoViewModel : ViewModel() {
             lastPlayedAt = System.currentTimeMillis() - 60_000
         ),
         VideoEntity(
+            id = 3,
             title = "夜航日志",
             fileName = "night_flight.mp4",
             path = "/storage/emulated/0/Videos/night_flight.mp4",
@@ -58,6 +63,7 @@ class VideoViewModel : ViewModel() {
             lastPlayedAt = System.currentTimeMillis() - 120_000
         ),
         VideoEntity(
+            id = 4,
             title = "夏日打工记",
             fileName = "summer_job.mp4",
             path = "/storage/emulated/0/Videos/summer_job.mp4",
@@ -71,4 +77,43 @@ class VideoViewModel : ViewModel() {
             lastPlayedAt = System.currentTimeMillis() - 200_000
         )
     )
+
+    private val _uiState = MutableStateFlow(
+        VideoUiState(
+            videos = initialVideos,
+            favoriteVideos = initialVideos.filter { it.favorite },
+            historyVideos = initialVideos,
+            recommendations = engine.recommend(initialVideos),
+            filteredVideos = initialVideos
+        )
+    )
+    val uiState: StateFlow<VideoUiState> = _uiState.asStateFlow()
+
+    fun toggleFavorite(videoId: Long) {
+        val updated = _uiState.value.videos.map { video ->
+            if (video.id == videoId) video.copy(favorite = !video.favorite) else video
+        }
+        _uiState.value = _uiState.value.copy(
+            videos = updated,
+            favoriteVideos = updated.filter { it.favorite },
+            recommendations = engine.recommend(updated)
+        )
+    }
+
+    fun updateSearchQuery(query: String) {
+        val q = query.trim()
+        val filtered = if (q.isEmpty()) {
+            _uiState.value.videos
+        } else {
+            _uiState.value.videos.filter { video ->
+                video.title.contains(q, ignoreCase = true) ||
+                    video.author.contains(q, ignoreCase = true) ||
+                    video.tags.any { tag -> tag.contains(q, ignoreCase = true) }
+            }
+        }
+        _uiState.value = _uiState.value.copy(
+            searchQuery = q,
+            filteredVideos = filtered
+        )
+    }
 }

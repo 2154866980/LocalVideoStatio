@@ -25,10 +25,7 @@ fun VideoPlayerScreen(
             .padding(24.dp)
     ) {
         Column {
-            Text(
-                text = video.title,
-                color = Color.White
-            )
+            Text(text = video.title, color = Color.White)
             Text(
                 text = "UP：${video.author}",
                 color = Color(0xFFB8C2D1),
