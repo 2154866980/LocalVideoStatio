@@ -1,25 +1,9 @@
-package com.localvideostation.app.viewmodel
+package com.localvideostation.app.data
 
-import androidx.lifecycle.ViewModel
-import com.localvideostation.app.data.RecommendationEngine
-import com.localvideostation.app.data.VideoEntity
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import android.content.Context
 
-data class VideoUiState(
-    val videos: List<VideoEntity> = emptyList(),
-    val favoriteVideos: List<VideoEntity> = emptyList(),
-    val historyVideos: List<VideoEntity> = emptyList(),
-    val recommendations: List<VideoEntity> = emptyList(),
-    val searchQuery: String = "",
-    val filteredVideos: List<VideoEntity> = emptyList()
-)
-
-class VideoViewModel : ViewModel() {
-    private val engine = RecommendationEngine()
-
-    private val initialVideos = listOf(
+class VideoRepository(private val scanner: LocalVideoScanner? = null) {
+    fun sampleVideos(): List<VideoEntity> = listOf(
         VideoEntity(
             id = 1,
             title = "少女与荒野",
@@ -32,7 +16,8 @@ class VideoViewModel : ViewModel() {
             tags = listOf("治愈", "旅行", "自然"),
             favorite = true,
             lastPositionMs = 90_000,
-            lastPlayedAt = System.currentTimeMillis() - 10_000
+            lastPlayedAt = System.currentTimeMillis() - 10_000,
+            isVisible = true
         ),
         VideoEntity(
             id = 2,
@@ -46,7 +31,8 @@ class VideoViewModel : ViewModel() {
             tags = listOf("剧情", "动作", "都市"),
             favorite = false,
             lastPositionMs = 120_000,
-            lastPlayedAt = System.currentTimeMillis() - 60_000
+            lastPlayedAt = System.currentTimeMillis() - 60_000,
+            isVisible = true
         ),
         VideoEntity(
             id = 3,
@@ -60,7 +46,8 @@ class VideoViewModel : ViewModel() {
             tags = listOf("电影", "夜晚", "纪录片"),
             favorite = true,
             lastPositionMs = 304_000,
-            lastPlayedAt = System.currentTimeMillis() - 120_000
+            lastPlayedAt = System.currentTimeMillis() - 120_000,
+            isVisible = true
         ),
         VideoEntity(
             id = 4,
@@ -74,46 +61,13 @@ class VideoViewModel : ViewModel() {
             tags = listOf("生活", "搞笑"),
             favorite = false,
             lastPositionMs = 15_000,
-            lastPlayedAt = System.currentTimeMillis() - 200_000
+            lastPlayedAt = System.currentTimeMillis() - 200_000,
+            isVisible = true
         )
     )
 
-    private val _uiState = MutableStateFlow(
-        VideoUiState(
-            videos = initialVideos,
-            favoriteVideos = initialVideos.filter { it.favorite },
-            historyVideos = initialVideos,
-            recommendations = engine.recommend(initialVideos),
-            filteredVideos = initialVideos
-        )
-    )
-    val uiState: StateFlow<VideoUiState> = _uiState.asStateFlow()
-
-    fun toggleFavorite(videoId: Long) {
-        val updated = _uiState.value.videos.map { video ->
-            if (video.id == videoId) video.copy(favorite = !video.favorite) else video
-        }
-        _uiState.value = _uiState.value.copy(
-            videos = updated,
-            favoriteVideos = updated.filter { it.favorite },
-            recommendations = engine.recommend(updated)
-        )
-    }
-
-    fun updateSearchQuery(query: String) {
-        val q = query.trim()
-        val filtered = if (q.isEmpty()) {
-            _uiState.value.videos
-        } else {
-            _uiState.value.videos.filter { video ->
-                video.title.contains(q, ignoreCase = true) ||
-                    video.author.contains(q, ignoreCase = true) ||
-                    video.tags.any { tag -> tag.contains(q, ignoreCase = true) }
-            }
-        }
-        _uiState.value = _uiState.value.copy(
-            searchQuery = q,
-            filteredVideos = filtered
-        )
+    fun scanLocalVideos(context: Context): List<VideoEntity> {
+        val scanned = scanner ?: LocalVideoScanner(context)
+        return scanned.scanVideos().ifEmpty { sampleVideos() }
     }
 }
